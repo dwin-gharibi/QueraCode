@@ -57,7 +57,14 @@ jobs:
         run: npm run unit
 
       - name: Command registration sweep
-        run: npm run test:commands
+        env:
+          QUERA_SESSION_ID: ${{ secrets.QUERA_SESSION_ID }}
+        run: |
+          if [ -z "$QUERA_SESSION_ID" ]; then
+            echo "No QUERA_SESSION_ID secret available - skipping the live sweep."
+            exit 0
+          fi
+          npm run test:commands
 
       - name: Package .vsix
         run: npx --yes @vscode/vsce package --out queracode.vsix

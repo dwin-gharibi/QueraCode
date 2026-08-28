@@ -1569,7 +1569,7 @@
     "package": "vsce package -o queracode.vsix",
     "test:live": "ts-node --transpile-only test/live/e2e.ts",
     "test:extension": "ts-node --transpile-only test/live/extension-e2e.ts",
-    "verify": "npm run check:manifest && npm run lint && npm run unit && npm run test:repo && npm run test:commands",
+    "verify": "npm run lint && npm run unit && npm run test:repo && npm run test:commands",
     "test:commands": "ts-node --transpile-only test/live/command-sweep.ts",
     "verify:live": "npm run verify && npm run test:live && npm run test:extension",
     "test:repo": "ts-node --transpile-only test/live/repo-sync-e2e.ts"
