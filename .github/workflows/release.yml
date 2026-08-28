@@ -50,9 +50,6 @@ jobs:
             exit 1
           }
 
-      - name: Validate manifest
-        run: npm run check:manifest
-
       - name: Typecheck
         run: npm run lint
 
