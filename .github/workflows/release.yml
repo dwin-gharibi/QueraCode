@@ -1,0 +1,92 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Build and attach the .vsix without publishing"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build, verify and publish
+    runs-on: ubuntu-latest
+    environment: release
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - run: npm ci
+
+      - name: Tag must match package.json version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          manifest="$(node -p "require('./package.json').version")"
+          tag="${GITHUB_REF_NAME#v}"
+          echo "manifest=$manifest tag=$tag"
+          if [ "$manifest" != "$tag" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match package.json version $manifest"
+            exit 1
+          fi
+
+      - name: CHANGELOG must mention this version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          grep -q "## $version" CHANGELOG.md || {
+            echo "::error::CHANGELOG.md has no '## $version' section"
+            exit 1
+          }
+
+      - name: Validate manifest
+        run: npm run check:manifest
+
+      - name: Typecheck
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm run unit
+
+      - name: Command registration sweep
+        run: npm run test:commands
+
+      - name: Package .vsix
+        run: npx --yes @vscode/vsce package --out queracode.vsix
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: queracode-vsix
+          path: queracode.vsix
+          if-no-files-found: error
+
+      - name: GitHub release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: queracode.vsix
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+
+      - name: Publish to the VS Code Marketplace
+        if: startsWith(github.ref, 'refs/tags/v') && env.VSCE_PAT != ''
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: npx --yes @vscode/vsce publish --packagePath queracode.vsix
+
+      - name: Publish to Open VSX
+        if: startsWith(github.ref, 'refs/tags/v') && env.OVSX_PAT != ''
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        run: npx --yes ovsx publish queracode.vsix --pat "$OVSX_PAT"
