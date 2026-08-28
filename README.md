@@ -369,5 +369,5 @@ their owner.
 
 
 <div align="center">
-<img src="media/quera-logo.png" alt="Quera" height="46" />
+<img src="media/quera-logo.png" alt="Quera" height="80" />
 <br/>
