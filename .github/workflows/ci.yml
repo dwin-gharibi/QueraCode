@@ -48,7 +48,16 @@ jobs:
       - name: Unit tests
         run: npm run unit
       - name: Command registration sweep
-        run: npm run test:commands
+        if: matrix.os == 'ubuntu-latest' && matrix.node == '20'
+        shell: bash
+        env:
+          QUERA_SESSION_ID: ${{ secrets.QUERA_SESSION_ID }}
+        run: |
+          if [ -z "$QUERA_SESSION_ID" ]; then
+            echo "No QUERA_SESSION_ID secret available - skipping the live sweep."
+            exit 0
+          fi
+          npm run test:commands
 
   package:
     name: Package .vsix

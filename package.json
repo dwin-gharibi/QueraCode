@@ -1567,12 +1567,12 @@
     "test": "npm run unit",
     "unit": "mocha -r ts-node/register 'test/unit/**/*.test.ts'",
     "package": "vsce package -o queracode.vsix",
-    "test:live": "TS_NODE_TRANSPILE_ONLY=true ts-node test/live/e2e.ts",
-    "test:extension": "TS_NODE_TRANSPILE_ONLY=true ts-node test/live/extension-e2e.ts",
+    "test:live": "ts-node --transpile-only test/live/e2e.ts",
+    "test:extension": "ts-node --transpile-only test/live/extension-e2e.ts",
     "verify": "npm run check:manifest && npm run lint && npm run unit && npm run test:repo && npm run test:commands",
-    "test:commands": "TS_NODE_TRANSPILE_ONLY=true ts-node test/live/command-sweep.ts",
+    "test:commands": "ts-node --transpile-only test/live/command-sweep.ts",
     "verify:live": "npm run verify && npm run test:live && npm run test:extension",
-    "test:repo": "TS_NODE_TRANSPILE_ONLY=true ts-node test/live/repo-sync-e2e.ts"
+    "test:repo": "ts-node --transpile-only test/live/repo-sync-e2e.ts"
   },
   "devDependencies": {
     "@types/markdown-it": "^14.1.2",
