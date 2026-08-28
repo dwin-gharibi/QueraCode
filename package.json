@@ -1,0 +1,1631 @@
+{
+  "name": "queracode",
+  "displayName": "QueraCode",
+  "description": "The Quera workbench for VS Code — browse and solve problems, submit and read judge results, and author lessons, problems and judges in Persian/RTL Markdown, with validators and AI assistance built in.",
+  "version": "0.2.0",
+  "publisher": "dwin-gharibi",
+  "author": {
+    "name": "Dwin Gharibi"
+  },
+  "license": "MIT",
+  "icon": "media/icon.png",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Education",
+    "Programming Languages",
+    "Linters",
+    "Snippets",
+    "Testing",
+    "Other"
+  ],
+  "keywords": [
+    "quera",
+    "کوئرا",
+    "online judge",
+    "competitive programming",
+    "persian",
+    "farsi",
+    "rtl",
+    "lms",
+    "education",
+    "judge",
+    "markdown",
+    "iran"
+  ],
+  "galleryBanner": {
+    "color": "#0F172A",
+    "theme": "dark"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dwin-gharibi/Queracode"
+  },
+  "main": "./out/src/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "queracode",
+          "title": "QueraCode",
+          "icon": "media/icons/quera-activity.svg"
+        }
+      ]
+    },
+    "views": {
+      "queracode": [
+        {
+          "id": "queracode.problemset",
+          "name": "Problemset",
+          "icon": "media/icons/quera-activity.svg",
+          "contextualTitle": "Quera Problemset"
+        },
+        {
+          "id": "queracode.courses",
+          "name": "Courses & Lessons",
+          "contextualTitle": "Quera Courses",
+          "icon": "media/icons/quera-activity.svg"
+        },
+        {
+          "id": "queracode.contests",
+          "name": "Contests",
+          "contextualTitle": "Quera Contests",
+          "icon": "media/icons/quera-activity.svg"
+        },
+        {
+          "id": "queracode.submissions",
+          "name": "My Submissions",
+          "contextualTitle": "Quera Submissions",
+          "icon": "media/icons/quera-activity.svg"
+        },
+        {
+          "id": "queracode.library",
+          "name": "My Library",
+          "contextualTitle": "Quera Library",
+          "icon": "media/icons/quera-activity.svg"
+        },
+        {
+          "id": "queracode.tools",
+          "name": "Tools & Validators",
+          "contextualTitle": "Quera Tools",
+          "icon": "media/icons/quera-activity.svg"
+        },
+        {
+          "id": "queracode.repo",
+          "name": "Course Repository",
+          "icon": "media/icons/quera-activity.svg",
+          "contextualTitle": "Quera Course Repository"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "queracode.problemset",
+        "contents": "Welcome to QueraCode — the Quera workbench.\n\n[Sign in to Quera](command:queracode.login)\n\nSign in with your Quera username and password, or paste a session id, then browse and solve problems right here.\n\n[Open the dashboard](command:queracode.openDashboard)\n[Take the tour](command:queracode.openWalkthrough)",
+        "when": "!queracode.signedIn"
+      },
+      {
+        "view": "queracode.problemset",
+        "contents": "No problems match the current filters.\n\n[Set filters](command:queracode.setFilters)\n[Search problems](command:queracode.searchProblems)",
+        "when": "queracode.signedIn"
+      },
+      {
+        "view": "queracode.courses",
+        "contents": "Your Quera colleges and classes appear here once you sign in.\n\n[Sign in to Quera](command:queracode.login)",
+        "when": "!queracode.signedIn"
+      },
+      {
+        "view": "queracode.contests",
+        "contents": "Contests you can enter appear here once you sign in.\n\n[Sign in to Quera](command:queracode.login)",
+        "when": "!queracode.signedIn"
+      },
+      {
+        "view": "queracode.submissions",
+        "contents": "Submissions you make from VS Code are listed here.\n\nOpen a problem and send a solution to see its judge result.\n\n[Open a problem by URL](command:queracode.openProblemByUrl)"
+      },
+      {
+        "view": "queracode.library",
+        "contents": "Problems and lessons you save locally land in your workspace's `quera/` folder and show up here.\n\n[Open a problem by URL](command:queracode.openProblemByUrl)\n[Start a new lesson](command:queracode.newLesson)\n[Scaffold a new problem](command:queracode.newProblem)\n[Settings and actions](command:queracode.openSettingsPanel)"
+      },
+      {
+        "view": "queracode.repo",
+        "contents": "درسنامه‌ها و تمرین‌های کالج را می‌توانید در یک مخزن گیت بنویسید و از همین‌جا مدیریت کنید.\n\n[Link a college to this folder](command:queracode.repoLink)\n[Clone a course repository](command:queracode.repoClone)\n\nبا روشن‌کردن ارسال خودکار، هر تغییر روی شاخهٔ دلخواه commit و push می‌شود.\n\n[Settings and actions](command:queracode.openSettingsPanel)"
+      }
+    ],
+    "commands": [
+      {
+        "command": "queracode.login",
+        "title": "Sign In",
+        "category": "Quera",
+        "icon": "$(sign-in)"
+      },
+      {
+        "command": "queracode.logout",
+        "title": "Sign Out",
+        "category": "Quera",
+        "icon": "$(sign-out)"
+      },
+      {
+        "command": "queracode.whoami",
+        "title": "Who Am I",
+        "category": "Quera"
+      },
+      {
+        "command": "queracode.refresh",
+        "title": "Refresh",
+        "category": "Quera",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "queracode.setFilters",
+        "title": "Set Problemset Filters",
+        "category": "Quera",
+        "icon": "$(filter)"
+      },
+      {
+        "command": "queracode.clearFilters",
+        "title": "Clear Filters",
+        "category": "Quera",
+        "icon": "$(clear-all)"
+      },
+      {
+        "command": "queracode.searchProblems",
+        "title": "Search Problems",
+        "category": "Quera",
+        "icon": "$(search)"
+      },
+      {
+        "command": "queracode.openProblem",
+        "title": "Open Problem",
+        "category": "Quera",
+        "icon": "$(book)"
+      },
+      {
+        "command": "queracode.solveProblem",
+        "title": "Solve Problem (create solution)",
+        "category": "Quera",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "queracode.downloadInitProject",
+        "title": "Download Initial Project",
+        "category": "Quera",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "queracode.runSamples",
+        "title": "Run Solution on Samples",
+        "category": "Quera",
+        "icon": "$(play)"
+      },
+      {
+        "command": "queracode.submitSolution",
+        "title": "Submit Solution",
+        "category": "Quera",
+        "icon": "$(cloud-upload)"
+      },
+      {
+        "command": "queracode.viewSubmissionResult",
+        "title": "View Submission Result",
+        "category": "Quera",
+        "icon": "$(checklist)"
+      },
+      {
+        "command": "queracode.openCourse",
+        "title": "Open Course",
+        "category": "Quera"
+      },
+      {
+        "command": "queracode.openLesson",
+        "title": "Open Lesson",
+        "category": "Quera",
+        "icon": "$(book)"
+      },
+      {
+        "command": "queracode.readLesson",
+        "title": "Read Lesson",
+        "category": "Quera",
+        "icon": "$(open-preview)"
+      },
+      {
+        "command": "queracode.newLesson",
+        "title": "New Lesson (Markdown)",
+        "category": "Quera",
+        "icon": "$(add)"
+      },
+      {
+        "command": "queracode.editLesson",
+        "title": "Edit Lesson",
+        "category": "Quera",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "queracode.publishLesson",
+        "title": "Publish Lesson",
+        "category": "Quera",
+        "icon": "$(cloud-upload)"
+      },
+      {
+        "command": "queracode.newProblem",
+        "title": "New Problem (scaffold)",
+        "category": "Quera",
+        "icon": "$(new-folder)"
+      },
+      {
+        "command": "queracode.previewMarkdown",
+        "title": "Preview (RTL + Persian)",
+        "category": "Quera",
+        "icon": "$(preview)"
+      },
+      {
+        "command": "queracode.validateMarkdown",
+        "title": "Validate Markdown",
+        "category": "Quera",
+        "icon": "$(check)"
+      },
+      {
+        "command": "queracode.normalizePersian",
+        "title": "Normalize Persian Text",
+        "category": "Quera",
+        "icon": "$(symbol-string)"
+      },
+      {
+        "command": "queracode.validateJudge",
+        "title": "Validate Judge (tester_config)",
+        "category": "Quera",
+        "icon": "$(law)"
+      },
+      {
+        "command": "queracode.validateTestNames",
+        "title": "Validate Test Names",
+        "category": "Quera"
+      },
+      {
+        "command": "queracode.validateDevopsImage",
+        "title": "Validate DevOps Image",
+        "category": "Quera"
+      },
+      {
+        "command": "queracode.insertMacro",
+        "title": "Insert Macro",
+        "category": "Quera"
+      },
+      {
+        "command": "queracode.insertTemplate",
+        "title": "Insert CP Template",
+        "category": "Quera"
+      },
+      {
+        "command": "queracode.registerMcp",
+        "title": "Register QueraMCP for Coder Agents",
+        "category": "Quera",
+        "icon": "$(server-process)"
+      },
+      {
+        "command": "queracode.solveWithAgent",
+        "title": "Solve with Coder Agent",
+        "category": "Quera",
+        "icon": "$(sparkle)"
+      },
+      {
+        "command": "queracode.ai.configure",
+        "title": "Configure AI Provider",
+        "category": "Quera AI",
+        "icon": "$(sparkle)"
+      },
+      {
+        "command": "queracode.ai.generateSolution",
+        "title": "Generate Solution",
+        "category": "Quera AI",
+        "icon": "$(sparkle)"
+      },
+      {
+        "command": "queracode.ai.explainProblem",
+        "title": "Explain Problem",
+        "category": "Quera AI",
+        "icon": "$(sparkle)"
+      },
+      {
+        "command": "queracode.ai.reviewSubmission",
+        "title": "Review Submission",
+        "category": "Quera AI",
+        "icon": "$(sparkle)"
+      },
+      {
+        "command": "queracode.ai.chat",
+        "title": "Chat",
+        "category": "Quera AI",
+        "icon": "$(sparkle)"
+      },
+      {
+        "command": "queracode.generateTestInputs",
+        "title": "Generate Test Inputs",
+        "category": "Quera",
+        "icon": "$(beaker)"
+      },
+      {
+        "command": "queracode.buildTestBundle",
+        "title": "Build Test Bundle (problem.zip)",
+        "category": "Quera",
+        "icon": "$(package)"
+      },
+      {
+        "command": "queracode.insertTesterCpp",
+        "title": "Insert tester.cpp (Judge Checker)",
+        "category": "Quera",
+        "icon": "$(file-code)"
+      },
+      {
+        "command": "queracode.validateTestBundle",
+        "title": "Validate Test Bundle",
+        "category": "Quera",
+        "icon": "$(checklist)"
+      },
+      {
+        "command": "queracode.openDashboard",
+        "title": "Open Dashboard",
+        "category": "Quera",
+        "icon": "$(dashboard)"
+      },
+      {
+        "command": "queracode.loadMore",
+        "title": "Load More Problems",
+        "category": "Quera",
+        "icon": "$(chevron-down)"
+      },
+      {
+        "command": "queracode.quickSubmit",
+        "title": "Quick Submit (by problem URL)",
+        "category": "Quera",
+        "icon": {
+          "light": "media/icons/quera-mark.svg",
+          "dark": "media/icons/quera-mark.svg"
+        }
+      },
+      {
+        "command": "queracode.saveProblem",
+        "title": "Save Problem Locally",
+        "category": "Quera",
+        "icon": "$(save)"
+      },
+      {
+        "command": "queracode.addCustomTest",
+        "title": "Add Custom Test",
+        "category": "Quera",
+        "icon": "$(beaker)"
+      },
+      {
+        "command": "queracode.snapshotVersion",
+        "title": "Snapshot Version",
+        "category": "Quera",
+        "icon": "$(history)"
+      },
+      {
+        "command": "queracode.versionHistory",
+        "title": "Version History",
+        "category": "Quera",
+        "icon": "$(history)"
+      },
+      {
+        "command": "queracode.insertSampleTest",
+        "title": "Insert Sample Test Block",
+        "category": "Quera"
+      },
+      {
+        "command": "queracode.insertCodeBlock",
+        "title": "Insert Code Block",
+        "category": "Quera"
+      },
+      {
+        "command": "queracode.insertLimits",
+        "title": "Insert Limits Table",
+        "category": "Quera"
+      },
+      {
+        "command": "queracode.insertAccordion",
+        "title": "Insert Accordion (details)",
+        "category": "Quera"
+      },
+      {
+        "command": "queracode.solveWithClaudeCode",
+        "title": "Solve with Claude Code",
+        "category": "Quera",
+        "icon": "$(sparkle)"
+      },
+      {
+        "command": "queracode.openContestProblem",
+        "title": "Open Contest Problem",
+        "category": "Quera",
+        "icon": "$(trophy)"
+      },
+      {
+        "command": "queracode.solveContestProblem",
+        "title": "Solve Contest Problem",
+        "category": "Quera",
+        "icon": "$(zap)"
+      },
+      {
+        "command": "queracode.sendToCph",
+        "title": "Send to CPH (Competitive Companion)",
+        "category": "Quera",
+        "icon": "$(rocket)"
+      },
+      {
+        "command": "queracode.setupCpLibrary",
+        "title": "Setup CP Library (AtCoder, KACTL, testlib)",
+        "category": "Quera",
+        "icon": "$(library)"
+      },
+      {
+        "command": "queracode.submitFileToProblem",
+        "title": "Submit Active File to Problem",
+        "category": "Quera",
+        "icon": "$(rocket)"
+      },
+      {
+        "command": "queracode.openProblemByUrl",
+        "title": "Open Problem by URL",
+        "category": "Quera",
+        "icon": "$(link-external)"
+      },
+      {
+        "command": "queracode.readCollegeLesson",
+        "title": "Open College Lesson",
+        "category": "Quera",
+        "icon": "$(open-preview)"
+      },
+      {
+        "command": "queracode.openLibraryItem",
+        "title": "Open Library Item",
+        "category": "Quera"
+      },
+      {
+        "command": "queracode.initJudge",
+        "title": "Init Project Judge (سیستم داوری)",
+        "category": "Quera"
+      },
+      {
+        "command": "queracode.generateTesterConfig",
+        "title": "Generate tester_config from Tests",
+        "category": "Quera"
+      },
+      {
+        "command": "queracode.generateValidFiles",
+        "title": "Generate valid_files",
+        "category": "Quera"
+      },
+      {
+        "command": "queracode.insertImage",
+        "title": "Insert Image (Markdown)",
+        "category": "Quera"
+      },
+      {
+        "command": "queracode.insertTable",
+        "title": "Insert Table (Markdown)",
+        "category": "Quera"
+      },
+      {
+        "command": "queracode.autoGenerateTests",
+        "title": "Auto-Generate Tests (inputs → solution → outputs)",
+        "category": "Quera"
+      },
+      {
+        "command": "queracode.publishToAssignment",
+        "title": "Publish Lesson/Problem to Assignment (by URL)",
+        "category": "Quera"
+      },
+      {
+        "command": "queracode.repoClone",
+        "title": "Clone Course Repository",
+        "category": "Quera",
+        "icon": "$(repo-clone)"
+      },
+      {
+        "command": "queracode.repoPull",
+        "title": "Pull Course Repository",
+        "category": "Quera",
+        "icon": "$(repo-pull)"
+      },
+      {
+        "command": "queracode.repoPush",
+        "title": "Push Course Repository (publish)",
+        "category": "Quera",
+        "icon": "$(repo-push)"
+      },
+      {
+        "command": "queracode.repoStatus",
+        "title": "Course Repository Status",
+        "category": "Quera",
+        "icon": "$(git-branch)"
+      },
+      {
+        "command": "queracode.addLessonToAssignment",
+        "title": "Add درسنامه to Assignment",
+        "category": "Quera",
+        "icon": "$(add)"
+      },
+      {
+        "command": "queracode.addProblemToAssignment",
+        "title": "Add Problem to Assignment",
+        "category": "Quera",
+        "icon": "$(add)"
+      },
+      {
+        "command": "queracode.editAssignmentProblem",
+        "title": "Edit Assignment Problem/درسنامه",
+        "category": "Quera",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "queracode.publishAssignmentEdit",
+        "title": "Publish Assignment Edit",
+        "category": "Quera",
+        "icon": "$(cloud-upload)"
+      },
+      {
+        "command": "queracode.deleteAssignmentProblem",
+        "title": "Delete Assignment Problem/درسنامه",
+        "category": "Quera",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "queracode.reorderAssignmentProblems",
+        "title": "Reorder Assignment Problems",
+        "category": "Quera",
+        "icon": "$(list-ordered)"
+      },
+      {
+        "command": "queracode.openWalkthrough",
+        "title": "Get Started / Take the Tour",
+        "category": "Quera",
+        "icon": "$(compass)"
+      },
+      {
+        "command": "queracode.showWelcome",
+        "title": "Show Welcome Page",
+        "category": "Quera",
+        "icon": "$(home)"
+      },
+      {
+        "command": "queracode.repoLink",
+        "title": "Link a College to This Repository",
+        "category": "Quera",
+        "icon": "$(link)"
+      },
+      {
+        "command": "queracode.repoSyncNow",
+        "title": "Commit and Push Course Repository Now",
+        "category": "Quera",
+        "icon": "$(cloud-upload)"
+      },
+      {
+        "command": "queracode.repoPullNow",
+        "title": "Update Course Repository Now",
+        "category": "Quera",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "queracode.openSettingsPanel",
+        "title": "Settings and Actions",
+        "category": "Quera",
+        "icon": "$(settings-gear)"
+      },
+      {
+        "command": "queracode.repoNewLesson",
+        "title": "New درسنامه in Chapter",
+        "category": "Quera",
+        "icon": "$(add)"
+      },
+      {
+        "command": "queracode.repoNewChapter",
+        "title": "New Chapter",
+        "category": "Quera",
+        "icon": "$(new-folder)"
+      },
+      {
+        "command": "queracode.repoRenameLesson",
+        "title": "Rename درسنامه Folder",
+        "category": "Quera",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "queracode.repoDeleteLesson",
+        "title": "Delete درسنامه",
+        "category": "Quera",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "queracode.repoRevealLesson",
+        "title": "Reveal in Explorer",
+        "category": "Quera",
+        "icon": "$(folder-opened)"
+      },
+      {
+        "command": "queracode.bindFile",
+        "title": "Bind File to a Quera درسنامه/تمرین",
+        "category": "Quera",
+        "icon": "$(link)"
+      },
+      {
+        "command": "queracode.unbindFile",
+        "title": "Unbind File from Quera",
+        "category": "Quera",
+        "icon": "$(debug-disconnect)"
+      },
+      {
+        "command": "queracode.publishFile",
+        "title": "Publish This File to Quera",
+        "category": "Quera",
+        "icon": "$(cloud-upload)"
+      },
+      {
+        "command": "queracode.pullFile",
+        "title": "Pull This File from Quera",
+        "category": "Quera",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "queracode.showBinding",
+        "title": "Show This File's Quera Binding",
+        "category": "Quera",
+        "icon": "$(info)"
+      },
+      {
+        "command": "queracode.importCollegeIntoRepo",
+        "title": "Import a College into This Repository",
+        "category": "Quera",
+        "icon": "$(repo-clone)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "queracode.openDashboard",
+          "when": "view == queracode.problemset",
+          "group": "navigation@0"
+        },
+        {
+          "command": "queracode.setFilters",
+          "when": "view == queracode.problemset",
+          "group": "navigation@1"
+        },
+        {
+          "command": "queracode.searchProblems",
+          "when": "view == queracode.problemset",
+          "group": "navigation@2"
+        },
+        {
+          "command": "queracode.clearFilters",
+          "when": "view == queracode.problemset",
+          "group": "navigation@3"
+        },
+        {
+          "command": "queracode.refresh",
+          "when": "view == queracode.problemset",
+          "group": "navigation@4"
+        },
+        {
+          "command": "queracode.openDashboard",
+          "when": "view == queracode.courses",
+          "group": "navigation@0"
+        },
+        {
+          "command": "queracode.newLesson",
+          "when": "view == queracode.courses",
+          "group": "navigation@1"
+        },
+        {
+          "command": "queracode.refresh",
+          "when": "view == queracode.courses",
+          "group": "navigation@2"
+        },
+        {
+          "command": "queracode.refresh",
+          "when": "view == queracode.contests",
+          "group": "navigation@1"
+        },
+        {
+          "command": "queracode.openDashboard",
+          "when": "view == queracode.submissions",
+          "group": "navigation@0"
+        },
+        {
+          "command": "queracode.refresh",
+          "when": "view == queracode.submissions",
+          "group": "navigation@1"
+        },
+        {
+          "command": "queracode.newProblem",
+          "when": "view == queracode.library",
+          "group": "navigation@1"
+        },
+        {
+          "command": "queracode.newLesson",
+          "when": "view == queracode.library",
+          "group": "navigation@2"
+        },
+        {
+          "command": "queracode.refresh",
+          "when": "view == queracode.library",
+          "group": "navigation@3"
+        },
+        {
+          "command": "queracode.openWalkthrough",
+          "when": "view == queracode.tools",
+          "group": "navigation@1"
+        },
+        {
+          "command": "queracode.showWelcome",
+          "when": "view == queracode.tools",
+          "group": "navigation@2"
+        },
+        {
+          "command": "queracode.openSettingsPanel",
+          "when": "view == queracode.tools",
+          "group": "navigation@0"
+        },
+        {
+          "command": "queracode.openSettingsPanel",
+          "when": "view == queracode.problemset",
+          "group": "navigation@9"
+        },
+        {
+          "command": "queracode.repoNewChapter",
+          "when": "view == queracode.repo",
+          "group": "navigation@1"
+        },
+        {
+          "command": "queracode.repoPullNow",
+          "when": "view == queracode.repo",
+          "group": "navigation@2"
+        },
+        {
+          "command": "queracode.repoSyncNow",
+          "when": "view == queracode.repo",
+          "group": "navigation@3"
+        },
+        {
+          "command": "queracode.refresh",
+          "when": "view == queracode.repo",
+          "group": "navigation@4"
+        },
+        {
+          "command": "queracode.importCollegeIntoRepo",
+          "when": "view == queracode.repo",
+          "group": "navigation@0"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "queracode.openProblem",
+          "when": "view == queracode.problemset && viewItem == problem",
+          "group": "inline@1"
+        },
+        {
+          "command": "queracode.solveProblem",
+          "when": "view == queracode.problemset && viewItem == problem",
+          "group": "inline@2"
+        },
+        {
+          "command": "queracode.runSamples",
+          "when": "view == queracode.problemset && viewItem == problem",
+          "group": "inline@3"
+        },
+        {
+          "command": "queracode.saveProblem",
+          "when": "view == queracode.problemset && viewItem == problem",
+          "group": "inline@4"
+        },
+        {
+          "command": "queracode.submitFileToProblem",
+          "when": "view == queracode.problemset && viewItem == problem",
+          "group": "1_solve@1"
+        },
+        {
+          "command": "queracode.downloadInitProject",
+          "when": "view == queracode.problemset && viewItem == problem",
+          "group": "1_solve@2"
+        },
+        {
+          "command": "queracode.openProblemByUrl",
+          "when": "view == queracode.problemset && viewItem == problem",
+          "group": "1_solve@3"
+        },
+        {
+          "command": "queracode.ai.generateSolution",
+          "when": "view == queracode.problemset && viewItem == problem",
+          "group": "4_ai@1"
+        },
+        {
+          "command": "queracode.ai.explainProblem",
+          "when": "view == queracode.problemset && viewItem == problem",
+          "group": "4_ai@2"
+        },
+        {
+          "command": "queracode.solveWithClaudeCode",
+          "when": "view == queracode.problemset && viewItem == problem",
+          "group": "4_ai@3"
+        },
+        {
+          "command": "queracode.sendToCph",
+          "when": "view == queracode.problemset && viewItem == problem",
+          "group": "4_ai@4"
+        },
+        {
+          "command": "queracode.readLesson",
+          "when": "view == queracode.courses && viewItem == lesson",
+          "group": "inline@1"
+        },
+        {
+          "command": "queracode.editLesson",
+          "when": "view == queracode.courses && viewItem == lesson",
+          "group": "inline@2"
+        },
+        {
+          "command": "queracode.readCollegeLesson",
+          "when": "view == queracode.courses && viewItem == collegeLesson",
+          "group": "inline@1"
+        },
+        {
+          "command": "queracode.solveProblem",
+          "when": "view == queracode.courses && viewItem =~ /^(lmsProblem|collegeProblem)$/",
+          "group": "inline@2"
+        },
+        {
+          "command": "queracode.saveProblem",
+          "when": "view == queracode.courses && viewItem =~ /^(lmsProblem|collegeProblem)$/",
+          "group": "inline@3"
+        },
+        {
+          "command": "queracode.openLesson",
+          "when": "view == queracode.courses && viewItem == chapter",
+          "group": "inline@1"
+        },
+        {
+          "command": "queracode.addLessonToAssignment",
+          "when": "view == queracode.courses && viewItem =~ /^(chapter|collegeChapter)$/",
+          "group": "authoring@1"
+        },
+        {
+          "command": "queracode.addProblemToAssignment",
+          "when": "view == queracode.courses && viewItem =~ /^(chapter|collegeChapter)$/",
+          "group": "authoring@2"
+        },
+        {
+          "command": "queracode.reorderAssignmentProblems",
+          "when": "view == queracode.courses && viewItem =~ /^(chapter|collegeChapter)$/",
+          "group": "authoring@3"
+        },
+        {
+          "command": "queracode.editAssignmentProblem",
+          "when": "view == queracode.courses && viewItem =~ /^(lesson|collegeLesson|problem|lmsProblem|collegeProblem)$/",
+          "group": "authoring@1"
+        },
+        {
+          "command": "queracode.deleteAssignmentProblem",
+          "when": "view == queracode.courses && viewItem =~ /^(lesson|collegeLesson|problem|lmsProblem|collegeProblem)$/",
+          "group": "authoring@9"
+        },
+        {
+          "command": "queracode.openContestProblem",
+          "when": "view == queracode.contests && viewItem == contestProblem",
+          "group": "inline@1"
+        },
+        {
+          "command": "queracode.solveContestProblem",
+          "when": "view == queracode.contests && viewItem == contestProblem",
+          "group": "inline@2"
+        },
+        {
+          "command": "queracode.viewSubmissionResult",
+          "when": "view == queracode.submissions && viewItem == submission",
+          "group": "inline@1"
+        },
+        {
+          "command": "queracode.ai.reviewSubmission",
+          "when": "view == queracode.submissions && viewItem == submission",
+          "group": "ai@1"
+        },
+        {
+          "command": "queracode.repoNewLesson",
+          "when": "view == queracode.repo && viewItem == repoChapter",
+          "group": "inline@1"
+        },
+        {
+          "command": "queracode.repoRenameLesson",
+          "when": "view == queracode.repo && viewItem == repoLesson",
+          "group": "inline@1"
+        },
+        {
+          "command": "queracode.repoRevealLesson",
+          "when": "view == queracode.repo && viewItem == repoLesson",
+          "group": "inline@2"
+        },
+        {
+          "command": "queracode.repoDeleteLesson",
+          "when": "view == queracode.repo && viewItem == repoLesson",
+          "group": "9_danger@1"
+        },
+        {
+          "command": "queracode.repoLink",
+          "when": "view == queracode.repo && viewItem == repoRoot",
+          "group": "inline@1"
+        },
+        {
+          "command": "queracode.repoStatus",
+          "when": "view == queracode.repo && viewItem == repoRoot",
+          "group": "inline@2"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "queracode.previewMarkdown",
+          "when": "resourceExtname == .md",
+          "group": "navigation@1"
+        },
+        {
+          "command": "queracode.submitSolution",
+          "when": "queracode.canSubmit",
+          "group": "navigation@2"
+        },
+        {
+          "command": "queracode.quickSubmit",
+          "group": "navigation@0"
+        },
+        {
+          "command": "queracode.publishFile",
+          "when": "resourceExtname == .md",
+          "group": "navigation@3"
+        },
+        {
+          "command": "queracode.pullFile",
+          "when": "resourceExtname == .md",
+          "group": "navigation@4"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "queracode.publishLesson",
+          "when": "resourceExtname == .md"
+        },
+        {
+          "command": "queracode.readCollegeLesson",
+          "when": "false"
+        },
+        {
+          "command": "queracode.openLesson",
+          "when": "false"
+        },
+        {
+          "command": "queracode.readLesson",
+          "when": "false"
+        },
+        {
+          "command": "queracode.submitFileToProblem",
+          "when": "false"
+        },
+        {
+          "command": "queracode.openContestProblem",
+          "when": "false"
+        },
+        {
+          "command": "queracode.solveContestProblem",
+          "when": "false"
+        },
+        {
+          "command": "queracode.loadMore",
+          "when": "false"
+        }
+      ],
+      "editor/context": [
+        {
+          "submenu": "queracode.context",
+          "group": "navigation@9"
+        }
+      ],
+      "explorer/context": [
+        {
+          "submenu": "queracode.context",
+          "group": "7_modification@9"
+        }
+      ],
+      "queracode.context": [
+        {
+          "command": "queracode.quickSubmit",
+          "group": "1_submit@1"
+        },
+        {
+          "command": "queracode.runSamples",
+          "group": "1_submit@2"
+        },
+        {
+          "command": "queracode.addCustomTest",
+          "group": "1_submit@3"
+        },
+        {
+          "command": "queracode.snapshotVersion",
+          "group": "2_version@1"
+        },
+        {
+          "command": "queracode.versionHistory",
+          "group": "2_version@2"
+        },
+        {
+          "command": "queracode.previewMarkdown",
+          "when": "resourceExtname == .md",
+          "group": "3_author@1"
+        },
+        {
+          "command": "queracode.validateMarkdown",
+          "when": "resourceExtname == .md",
+          "group": "3_author@2"
+        },
+        {
+          "command": "queracode.publishLesson",
+          "when": "resourceExtname == .md",
+          "group": "3_author@3"
+        },
+        {
+          "command": "queracode.insertMacro",
+          "when": "resourceExtname == .md",
+          "group": "3_author@4"
+        },
+        {
+          "command": "queracode.ai.generateSolution",
+          "group": "4_ai@1"
+        },
+        {
+          "command": "queracode.sendToCph",
+          "group": "4_ai@2"
+        },
+        {
+          "command": "queracode.openProblemByUrl",
+          "group": "1_open@3"
+        },
+        {
+          "command": "queracode.insertImage",
+          "group": "3_author@4"
+        },
+        {
+          "command": "queracode.insertTable",
+          "group": "3_author@5"
+        },
+        {
+          "command": "queracode.bindFile",
+          "when": "resourceExtname == .md",
+          "group": "3_author@6"
+        },
+        {
+          "command": "queracode.publishFile",
+          "when": "resourceExtname == .md",
+          "group": "3_author@7"
+        },
+        {
+          "command": "queracode.pullFile",
+          "when": "resourceExtname == .md",
+          "group": "3_author@8"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "queracode.submitSolution",
+        "key": "ctrl+alt+enter",
+        "mac": "cmd+alt+enter"
+      },
+      {
+        "command": "queracode.runSamples",
+        "key": "ctrl+alt+r",
+        "mac": "cmd+alt+r"
+      },
+      {
+        "command": "queracode.previewMarkdown",
+        "key": "ctrl+alt+v",
+        "mac": "cmd+alt+v"
+      },
+      {
+        "command": "queracode.searchProblems",
+        "key": "ctrl+alt+p",
+        "mac": "cmd+alt+p"
+      },
+      {
+        "command": "queracode.validateJudge",
+        "key": "ctrl+alt+j",
+        "mac": "cmd+alt+j"
+      },
+      {
+        "command": "queracode.openDashboard",
+        "key": "ctrl+alt+d",
+        "mac": "cmd+alt+d"
+      },
+      {
+        "command": "queracode.quickSubmit",
+        "key": "ctrl+alt+u",
+        "mac": "cmd+alt+u"
+      },
+      {
+        "command": "queracode.versionHistory",
+        "key": "ctrl+alt+h",
+        "mac": "cmd+alt+h"
+      },
+      {
+        "command": "queracode.addCustomTest",
+        "key": "ctrl+alt+t",
+        "mac": "cmd+alt+t"
+      },
+      {
+        "command": "queracode.openSettingsPanel",
+        "key": "ctrl+alt+,",
+        "mac": "cmd+alt+,"
+      }
+    ],
+    "configuration": {
+      "title": "QueraCode",
+      "properties": {
+        "queracode.baseUrl": {
+          "type": "string",
+          "default": "https://quera.org/",
+          "description": "Quera base URL. Override only if you proxy Quera.",
+          "order": 0
+        },
+        "queracode.authMethod": {
+          "type": "string",
+          "enum": [
+            "sessionId",
+            "usernamePassword"
+          ],
+          "enumDescriptions": [
+            "Use a pre-issued session_id cookie (stored in VS Code SecretStorage).",
+            "Sign in with a username/password (exchanged for a session)."
+          ],
+          "default": "sessionId",
+          "order": 1,
+          "markdownDescription": "Which sign-in QueraCode offers by default. Run **Quera: Sign In** to switch — credentials always go to VS Code's SecretStorage, never to `settings.json`."
+        },
+        "queracode.username": {
+          "type": "string",
+          "default": "",
+          "order": 2,
+          "markdownDescription": "Quera account identifier — the email address or mobile number you sign in with. The password lives in SecretStorage."
+        },
+        "queracode.defaultLanguage": {
+          "type": "string",
+          "default": "python",
+          "description": "Default language when creating a solution (python, cpp, java, go, ...).",
+          "order": 6
+        },
+        "queracode.locale": {
+          "type": "string",
+          "enum": [
+            "fa",
+            "en",
+            "ar"
+          ],
+          "default": "fa",
+          "description": "Content locale for Quera reads.",
+          "order": 10
+        },
+        "queracode.editorDirection": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "rtl",
+            "ltr"
+          ],
+          "default": "auto",
+          "description": "Text direction for the problem/lesson preview and editors.",
+          "order": 11
+        },
+        "queracode.persianFont": {
+          "type": "string",
+          "default": "Vazirmatn, Tahoma, sans-serif",
+          "description": "Font stack for Persian (RTL) text in webviews.",
+          "order": 14
+        },
+        "queracode.latinFont": {
+          "type": "string",
+          "default": "Inter, system-ui, sans-serif",
+          "description": "Font stack for Latin text in webviews.",
+          "order": 15
+        },
+        "queracode.monoFont": {
+          "type": "string",
+          "default": "JetBrains Mono, Cascadia Code, monospace",
+          "description": "Monospace font for code in webviews.",
+          "order": 16
+        },
+        "queracode.enableSubmission": {
+          "type": "boolean",
+          "default": false,
+          "order": 4,
+          "markdownDescription": "Allow sending solutions to Quera. Off by default because a submission consumes an attempt and appears on scoreboards."
+        },
+        "queracode.enableWrite": {
+          "type": "boolean",
+          "default": false,
+          "order": 5,
+          "markdownDescription": "Allow changing Quera content — publishing درسنامه, editing assignment problems, uploading media. Off by default."
+        },
+        "queracode.readOnly": {
+          "type": "boolean",
+          "default": false,
+          "order": 3,
+          "markdownDescription": "Master switch. When on, it forces `#queracode.enableSubmission#` and `#queracode.enableWrite#` off regardless of their own values."
+        },
+        "queracode.sandbox": {
+          "type": "string",
+          "enum": [
+            "none",
+            "docker",
+            "local"
+          ],
+          "default": "docker",
+          "order": 7,
+          "markdownDescription": "How solutions run against sample tests. `docker` isolates the run and is recommended; `local` executes directly on your machine; `none` only prints the command."
+        },
+        "queracode.problemsetPageSize": {
+          "type": "number",
+          "default": 25,
+          "description": "How many problems to show per page in the Problemset view.",
+          "order": 9
+        },
+        "queracode.solutionsDir": {
+          "type": "string",
+          "default": "quera",
+          "order": 8,
+          "markdownDescription": "Workspace subfolder QueraCode writes into: solutions, saved problems, generated tests and downloaded projects."
+        },
+        "queracode.autoRegisterMcp": {
+          "type": "boolean",
+          "default": false,
+          "description": "Write .vscode/mcp.json on startup to register the sibling QueraMCP server for MCP-capable coder agents (it will then appear under 'MCP Servers' in the Extensions view). Off by default — QueraCode itself never needs it; run 'Quera: Register QueraMCP for Coder Agents' to opt in once.",
+          "order": 21
+        },
+        "queracode.ai.provider": {
+          "type": "string",
+          "enum": [
+            "openrouter",
+            "openai",
+            "anthropic",
+            "groq",
+            "together",
+            "deepseek",
+            "mistral",
+            "fireworks",
+            "xai",
+            "perplexity",
+            "gemini",
+            "avalai",
+            "ollama",
+            "lmstudio",
+            "custom"
+          ],
+          "enumDescriptions": [
+            "OpenRouter — unified gateway to 300+ models.",
+            "OpenAI.",
+            "Anthropic (Claude) — native /messages API.",
+            "Groq — very fast inference for open models.",
+            "Together AI.",
+            "DeepSeek — strong coding/reasoning models.",
+            "Mistral AI.",
+            "Fireworks AI.",
+            "xAI (Grok).",
+            "Perplexity — web-grounded 'sonar' models.",
+            "Google Gemini via its OpenAI-compatible endpoint.",
+            "AvalAI — Iran-reachable OpenAI-compatible gateway.",
+            "Ollama (local) — no API key required.",
+            "LM Studio (local) — no API key required.",
+            "Custom — any OpenAI-compatible endpoint (set queracode.ai.baseUrl)."
+          ],
+          "default": "openrouter",
+          "order": 18,
+          "markdownDescription": "Provider for the **Quera AI** commands. Run **Quera AI: Configure AI Provider** to store the key in SecretStorage; it is never written to settings."
+        },
+        "queracode.ai.model": {
+          "type": "string",
+          "default": "",
+          "order": 19,
+          "markdownDescription": "Model id for the chosen provider. Blank uses that provider's default."
+        },
+        "queracode.ai.baseUrl": {
+          "type": "string",
+          "default": "",
+          "order": 20,
+          "markdownDescription": "Base URL override — required when `#queracode.ai.provider#` is `custom` (any OpenAI-compatible endpoint)."
+        },
+        "queracode.openDashboardOnStartup": {
+          "type": "boolean",
+          "default": false,
+          "description": "Open the Quera dashboard automatically when VS Code starts (off by default).",
+          "order": 22
+        },
+        "queracode.customCss": {
+          "type": "string",
+          "default": "",
+          "order": 17,
+          "markdownDescription": "CSS injected into every QueraCode webview — bring your own `@font-face`, colors and sizes."
+        },
+        "queracode.fontSize": {
+          "type": "number",
+          "default": 14.5,
+          "minimum": 10,
+          "maximum": 24,
+          "description": "Base font size (px) for Quera panels and previews.",
+          "order": 12
+        },
+        "queracode.accentColor": {
+          "type": "string",
+          "default": "",
+          "pattern": "^(#[0-9a-fA-F]{6})?$",
+          "order": 13,
+          "markdownDescription": "Override the Quera cyan used across panels, as `#RRGGBB`. Leave empty for Quera's own `#0099CC`."
+        },
+        "queracode.repo.autoPull": {
+          "type": "boolean",
+          "default": false,
+          "order": 23,
+          "markdownDescription": "Fast-forward the linked Quera course repository on a timer. Skipped whenever the working tree is dirty or mid-merge, so it can never overwrite local work."
+        },
+        "queracode.repo.autoPullIntervalMinutes": {
+          "type": "number",
+          "default": 15,
+          "minimum": 1,
+          "maximum": 240,
+          "order": 24,
+          "markdownDescription": "How often to fast-forward, in minutes. Requires `#queracode.repo.autoPull#`."
+        },
+        "queracode.repo.autoPush": {
+          "type": "boolean",
+          "default": false,
+          "order": 25,
+          "markdownDescription": "Commit and push saved changes in the course repository automatically.\n\n**Pushing publishes to the live college** — the repository's GitHub Actions workflow syncs changed lessons to Quera. Requires `#queracode.enableWrite#`."
+        },
+        "queracode.repo.autoPushDelaySeconds": {
+          "type": "number",
+          "default": 45,
+          "minimum": 5,
+          "maximum": 3600,
+          "order": 26,
+          "markdownDescription": "Quiet period after the last save before auto-push commits, so a burst of saves becomes one commit."
+        },
+        "queracode.repo.branch": {
+          "type": "string",
+          "default": "",
+          "order": 27,
+          "markdownDescription": "Branch auto-commits land on. It is checked out first, and created from the current HEAD if it does not exist. Leave empty to use whatever is already checked out."
+        },
+        "queracode.repo.commitMessage": {
+          "type": "string",
+          "default": "درسنامه: ${files} (QueraCode)",
+          "order": 28,
+          "markdownDescription": "Commit message template. `${files}` lists the changed lesson folders, `${count}` how many, `${date}` the timestamp."
+        },
+        "queracode.sync.autoPublishOnSave": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Publish a bound Markdown file straight to Quera every time you save it.\n\n**Students see the change immediately** — there is no review step. Requires `#queracode.enableWrite#`, and only affects files bound with **Quera: Bind File to a Quera درسنامه/تمرین**.",
+          "order": 29
+        },
+        "queracode.sync.publishDelaySeconds": {
+          "type": "number",
+          "default": 3,
+          "minimum": 0,
+          "maximum": 300,
+          "markdownDescription": "Quiet period after the last save before auto-publish fires, so saving repeatedly while editing publishes once.",
+          "order": 30
+        },
+        "queracode.sync.confirmBeforePublish": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Ask before a manual publish. Auto-publish never asks — that is what makes it automatic, which is why it is off by default.",
+          "order": 31
+        }
+      }
+    },
+    "configurationDefaults": {
+      "[markdown]": {}
+    },
+    "submenus": [
+      {
+        "id": "queracode.context",
+        "label": "Quera"
+      }
+    ],
+    "languages": [
+      {
+        "id": "quera-test",
+        "aliases": [
+          "Quera Test",
+          "quera-test"
+        ],
+        "extensions": [
+          ".qtest",
+          ".qsampletest",
+          ".qsolution",
+          ".qrun"
+        ],
+        "icon": {
+          "light": "media/icons/quera-tab-light.svg",
+          "dark": "media/icons/quera-tab-dark.svg"
+        }
+      },
+      {
+        "id": "quera-valid-files",
+        "aliases": [
+          "Quera valid_files"
+        ],
+        "filenames": [
+          "valid_files",
+          "initial_project"
+        ],
+        "icon": {
+          "light": "media/icons/quera-tab-light.svg",
+          "dark": "media/icons/quera-tab-dark.svg"
+        }
+      }
+    ],
+    "jsonValidation": [
+      {
+        "fileMatch": "tester_config.json",
+        "url": "./schemas/tester-config.schema.json"
+      }
+    ],
+    "walkthroughs": [
+      {
+        "id": "queracode.getStarted",
+        "title": "Get started with QueraCode",
+        "description": "Sign in to Quera, solve your first problem, and author lessons and judges — without leaving VS Code.",
+        "steps": [
+          {
+            "id": "signIn",
+            "title": "Sign in to Quera",
+            "description": "Sign in with your Quera username and password. If your account uses a one-time code, Google or GitHub, paste a session id instead — QueraCode offers both.\nCredentials go to VS Code's SecretStorage, never to settings.json.\n[Sign in to Quera](command:queracode.login)",
+            "media": {
+              "image": "media/screenshots/vscode-workbench.png",
+              "altText": "The QueraCode activity bar with the problemset, courses and submissions views"
+            },
+            "completionEvents": [
+              "onContext:queracode.signedIn"
+            ]
+          },
+          {
+            "id": "browse",
+            "title": "Find a problem",
+            "description": "The Problemset view carries Quera's full filter set — difficulty, tags, type, category and solve status. Search by name, or jump straight to a problem you already have a link to.\n[Search problems](command:queracode.searchProblems)\n[Open a problem by URL](command:queracode.openProblemByUrl)",
+            "media": {
+              "image": "media/screenshots/problem-view.png",
+              "altText": "A Quera problem statement rendered right-to-left inside VS Code"
+            },
+            "completionEvents": [
+              "onCommand:queracode.openProblem",
+              "onCommand:queracode.openProblemByUrl"
+            ]
+          },
+          {
+            "id": "solve",
+            "title": "Solve it and run the samples",
+            "description": "Scaffold a solution in your language, then run it against the problem's own sample tests in a Docker sandbox before spending an attempt.\n[Run on samples](command:queracode.runSamples)",
+            "media": {
+              "image": "media/diagrams/submit-flow.png",
+              "altText": "Solve, run against samples, submit, read the judge result"
+            },
+            "completionEvents": [
+              "onCommand:queracode.runSamples"
+            ]
+          },
+          {
+            "id": "submit",
+            "title": "Submit and read the verdict",
+            "description": "Submitting is off until you turn it on, so no attempt is ever spent by accident. Enable it, then send the active file with Ctrl+Alt+Enter and read the per-test judge breakdown in place.\n[Enable submission](command:workbench.action.openSettings?%22queracode.enableSubmission%22)",
+            "media": {
+              "image": "media/diagrams/features.png",
+              "altText": "What QueraCode covers end to end"
+            },
+            "completionEvents": [
+              "onSettingChanged:queracode.enableSubmission"
+            ]
+          },
+          {
+            "id": "author",
+            "title": "Author lessons, problems and judges",
+            "description": "Write درسنامه and تمرین content in Persian Markdown with a live RTL preview, then validate the judge config, test names and Markdown before publishing.\n[Start a lesson](command:queracode.newLesson)\n[Scaffold a problem](command:queracode.newProblem)",
+            "media": {
+              "image": "media/illustrations/quera-dev.png",
+              "altText": "Authoring Quera content in VS Code"
+            },
+            "completionEvents": [
+              "onCommand:queracode.newLesson",
+              "onCommand:queracode.newProblem"
+            ]
+          },
+          {
+            "id": "ai",
+            "title": "Optional: bring your own AI",
+            "description": "Point QueraCode at any OpenAI-compatible provider — OpenRouter, Anthropic, Groq, DeepSeek, a local Ollama, whatever you already pay for — to explain problems and review submissions. The API key lives in SecretStorage.\n[Configure a provider](command:queracode.ai.configure)",
+            "media": {
+              "image": "media/diagrams/architecture.png",
+              "altText": "How QueraCode talks to Quera and to your AI provider"
+            },
+            "completionEvents": [
+              "onCommand:queracode.ai.configure"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "tsc --noEmit -p ./",
+    "pretest": "npm run compile",
+    "test": "npm run unit",
+    "unit": "mocha -r ts-node/register 'test/unit/**/*.test.ts'",
+    "package": "vsce package -o queracode.vsix",
+    "test:live": "TS_NODE_TRANSPILE_ONLY=true ts-node test/live/e2e.ts",
+    "test:extension": "TS_NODE_TRANSPILE_ONLY=true ts-node test/live/extension-e2e.ts",
+    "verify": "npm run check:manifest && npm run lint && npm run unit && npm run test:repo && npm run test:commands",
+    "test:commands": "TS_NODE_TRANSPILE_ONLY=true ts-node test/live/command-sweep.ts",
+    "check:manifest": "node scripts/check-manifest.js",
+    "verify:live": "npm run verify && npm run test:live && npm run test:extension",
+    "test:repo": "TS_NODE_TRANSPILE_ONLY=true ts-node test/live/repo-sync-e2e.ts"
+  },
+  "devDependencies": {
+    "@types/markdown-it": "^14.1.2",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20.19.43",
+    "@types/vscode": "^1.85.0",
+    "@vscode/test-electron": "^3.0.0",
+    "@vscode/vsce": "^3.9.2",
+    "glob": "^13.0.6",
+    "mocha": "^10.8.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "highlight.js": "^11.11.1",
+    "katex": "^0.17.0",
+    "markdown-it": "^14.3.0"
+  },
+  "homepage": "https://github.com/dwin-gharibi/Queracode#readme",
+  "bugs": {
+    "url": "https://github.com/dwin-gharibi/Queracode/issues"
+  },
+  "qna": "https://github.com/dwin-gharibi/Queracode/discussions",
+  "badges": [
+    {
+      "url": "https://img.shields.io/visual-studio-marketplace/v/dwin-gharibi.queracode",
+      "href": "https://marketplace.visualstudio.com/items?itemName=dwin-gharibi.queracode",
+      "description": "Marketplace version"
+    },
+    {
+      "url": "https://img.shields.io/visual-studio-marketplace/i/dwin-gharibi.queracode",
+      "href": "https://marketplace.visualstudio.com/items?itemName=dwin-gharibi.queracode",
+      "description": "Installs"
+    }
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": "limited",
+      "description": "Running a solution against sample tests executes workspace code. In a restricted workspace QueraCode reads and renders Quera content but will not run solutions.",
+      "restrictedConfigurations": [
+        "queracode.sandbox",
+        "queracode.baseUrl",
+        "queracode.customCss"
+      ]
+    },
+    "virtualWorkspaces": {
+      "supported": "limited",
+      "description": "Browsing, reading and authoring work anywhere. Running solutions against samples needs a real filesystem."
+    }
+  },
+  "extensionKind": [
+    "workspace",
+    "ui"
+  ]
+}
