@@ -1571,7 +1571,6 @@
     "test:extension": "TS_NODE_TRANSPILE_ONLY=true ts-node test/live/extension-e2e.ts",
     "verify": "npm run check:manifest && npm run lint && npm run unit && npm run test:repo && npm run test:commands",
     "test:commands": "TS_NODE_TRANSPILE_ONLY=true ts-node test/live/command-sweep.ts",
-    "check:manifest": "node scripts/check-manifest.js",
     "verify:live": "npm run verify && npm run test:live && npm run test:extension",
     "test:repo": "TS_NODE_TRANSPILE_ONLY=true ts-node test/live/repo-sync-e2e.ts"
   },
